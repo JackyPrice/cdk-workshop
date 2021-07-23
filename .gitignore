@@ -124,10 +124,10 @@ cdk.context.json
 cdk.out/
 
 # CDKworkshop specific
-!lambda/*.js
-bin/cdk-workshop.d.ts
-bin/cdk-workshop.js
-lib/cdk-workshop-stack.d.ts
-lib/cdk-workshop-stack.js
-test/cdk-workshop.test.d.ts
-test/cdk-workshop.test.js
+# !lambda/*.js
+!bin/*.d.ts
+bin/*.js
+lib/*.d.ts
+lib/*.js
+test/*.d.ts
+test/*.js
