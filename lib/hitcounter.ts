@@ -1,6 +1,7 @@
 import * as cdk from '@aws-cdk/core';
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as dynamodb from '@aws-cdk/aws-dynamodb';
+import { propertyValidator } from '@aws-cdk/core';
 
 export interface HitCounterProps {
     /** the function for which we want to count url hits **/
@@ -24,9 +25,16 @@ export interface HitCounterProps {
           handler: 'hitcounter.handler',
           code: lambda.Code.fromAsset('lambda'),
           environment: {
-              DOWNSTREAM_FUNCTION_NAME: props.downstream.functionName,
-              HITS_TABLE_NAME: table.tableName
+             // both of these names are not defined until after deployment and are imported from the environment
+            DOWNSTREAM_FUNCTION_NAME: props.downstream.functionName,
+            HITS_TABLE_NAME: table.tableName 
           }
       });
+
+      // grant the lambda role read/write permissions to our table
+      table.grantReadWriteData(this.handler);
+
+      // grant the lambda role invoke permissions to the downstream function
+      props.downstream.grantInvoke(this.handler);
     }
   }
