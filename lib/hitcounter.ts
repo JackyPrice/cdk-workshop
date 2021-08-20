@@ -12,6 +12,9 @@ export interface HitCounterProps {
   
     /** allows accessing the counter function */
     public readonly handler: lambda.Function;
+
+    /** the hit counter table */
+    public readonly table: dynamodb.Table;
   
     constructor(scope: cdk.Construct, id: string, props: HitCounterProps) {
       super(scope, id);
@@ -19,6 +22,7 @@ export interface HitCounterProps {
       const table = new dynamodb.Table(this, 'Hits', {
           partitionKey: { name: 'path', type: dynamodb.AttributeType.STRING }
       });
+      this.table = table;
   
       this.handler = new lambda.Function(this, 'HitCounterHandler', {
           runtime: lambda.Runtime.NODEJS_14_X,
@@ -33,7 +37,7 @@ export interface HitCounterProps {
 
       // grant the lambda role read/write permissions to our table
       table.grantReadWriteData(this.handler);
-
+ 1
       // grant the lambda role invoke permissions to the downstream function
       props.downstream.grantInvoke(this.handler);
     }
